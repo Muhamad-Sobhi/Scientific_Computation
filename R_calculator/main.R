@@ -1,124 +1,97 @@
 library(shiny)
 
-# --- UI Side ---
+addResourcePath(prefix = 'myassets', directoryPath = getwd())
+
 ui <- fluidPage(
   tags$head(
     tags$style(HTML("
       body { 
-      background-color: #000000; 
-      display: flex; 
-      justify-content: center; 
-      align-items: center; 
-      height: 100vh; 
-      margin: 0; }
-      .calc-container { 
-        background-color: #1a1a1a; 
-        border-radius: 40px; 
+        background: url('myassets/Team-logo.jpeg') no-repeat center fixed; 
+        background-size: cover; 
+      }
+      .calc-box { 
+        background: rgba(26, 26, 26, 0.85); 
+        border-radius: 35px; 
         padding: 25px; 
-        width: 340px; 
-        box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        width: 320px; 
+        margin: auto; 
+        margin-top: 80px; 
+        backdrop-filter: blur(15px); 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
       }
-      .display-screen {
-        text-align: right;
-        font-size: 55px;
-        padding: 20px;
-        min-height: 100px;
-        color: white;
-        font-weight: 300;
-        word-wrap: break-word;
-      }
-      .btn-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 12px;
-      }
-      .calc-btn {
-        border: none;
-        border-radius: 25px;
-        height: 65px;
-        font-size: 22px;
-        font-weight: 500;
-        transition: all 0.1s;
-        cursor: pointer;
-        outline: none !important;
-      }
-      .btn-num { background-color: #262626; color: white; }
-      .btn-op { background-color: #33363d; color: #a5c9ff; }
-      .btn-equals { background-color: #a5c9ff; color: #1a1a1a; }
-      
-      .calc-btn:active { transform: scale(0.9); filter: brightness(1.3); }
-      .calc-btn:hover { filter: brightness(1.1); }
     "))
   ),
   
-  div(class = "calc-container",
-      div(class = "display-screen", textOutput("display")),
+  div(class = "calc-box",
+      div(style = "text-align: right; font-size: 55px; padding: 20px; color: white;", textOutput("display")),
       
-      div(class = "btn-grid",
-          actionButton("btn_open", "(", class = "calc-btn btn-op"),
-          actionButton("btn_close", ")", class = "calc-btn btn-op"),
-          actionButton("btn_perc", "%", class = "calc-btn btn-op"),
-          actionButton("btn_AC", "AC", class = "calc-btn btn-op"),
-          
-          actionButton("btn_7", "7", class = "calc-btn btn-num"),
-          actionButton("btn_8", "8", class = "calc-btn btn-num"),
-          actionButton("btn_9", "9", class = "calc-btn btn-num"),
-          actionButton("btn_div", "÷", class = "calc-btn btn-op"),
-          
-          actionButton("btn_4", "4", class = "calc-btn btn-num"),
-          actionButton("btn_5", "5", class = "calc-btn btn-num"),
-          actionButton("btn_6", "6", class = "calc-btn btn-num"),
-          actionButton("btn_mult", "×", class = "calc-btn btn-op"),
-          
-          actionButton("btn_1", "1", class = "calc-btn btn-num"),
-          actionButton("btn_2", "2", class = "calc-btn btn-num"),
-          actionButton("btn_3", "3", class = "calc-btn btn-num"),
-          actionButton("btn_sub", "-", class = "calc-btn btn-op"),
-          
-          actionButton("btn_0", "0", class = "calc-btn btn-num"),
-          actionButton("btn_dot", ".", class = "calc-btn btn-num"),
-          actionButton("btn_equal", "=", class = "calc-btn btn-equals"),
-          actionButton("btn_add", "+", class = "calc-btn btn-op")
+      fluidRow(
+        column(6, actionButton("btn_AC", "AC", style = "width:100%; height:60px; border-radius:30px; border:none; background:#a5a5a5; color:black; font-size:20px; margin-bottom:12px;")),
+        column(3, actionButton("btn_perc", "%", style = "width:100%; height:60px; border-radius:50%; border:none; background:#33363d; color:#a5c9ff; font-size:22px;")),
+        column(3, actionButton("btn_div", "÷", style = "width:100%; height:60px; border-radius:50%; border:none; background:#33363d; color:#a5c9ff; font-size:22px;"))
+      ),
+      
+      fluidRow(
+        column(3, actionButton("btn_7", "7", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px; margin-bottom:12px;")),
+        column(3, actionButton("btn_8", "8", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_9", "9", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_mult", "×", style = "width:100%; height:60px; border-radius:50%; border:none; background:#33363d; color:#a5c9ff; font-size:22px;"))
+      ),
+      
+      fluidRow(
+        column(3, actionButton("btn_4", "4", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px; margin-bottom:12px;")),
+        column(3, actionButton("btn_5", "5", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_6", "6", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_sub", "-", style = "width:100%; height:60px; border-radius:50%; border:none; background:#33363d; color:#a5c9ff; font-size:22px;"))
+      ),
+      
+      fluidRow(
+        column(3, actionButton("btn_1", "1", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px; margin-bottom:12px;")),
+        column(3, actionButton("btn_2", "2", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_3", "3", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_add", "+", style = "width:100%; height:60px; border-radius:50%; border:none; background:#33363d; color:#a5c9ff; font-size:22px;"))
+      ),
+      
+      fluidRow(
+        column(6, actionButton("btn_0", "0", style = "width:100%; height:60px; border-radius:30px; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_dot", ".", style = "width:100%; height:60px; border-radius:50%; border:none; background:#262626; color:white; font-size:22px;")),
+        column(3, actionButton("btn_equal", "=", style = "width:100%; height:60px; border-radius:50%; border:none; background:#a5c9ff; color:#1a1a1a; font-size:22px;"))
       )
   )
 )
 
-# --- Server Side ---
 server <- function(input, output, session) {
-  # Value to hold the string expression
-  v <- reactiveValues(expr = "0", new_op = FALSE)
+  v <- reactiveValues(expr = "0")
   
-  # Function to handle all inputs
-  observe({
-    # We use a loop to create observers for all buttons dynamically
-    btns <- c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "(", ")", "%")
-    
-    lapply(btns, function(x) {
-      observeEvent(input[[paste0("btn_", x)]], {
-        if (v$expr == "0") v$expr <- x
-        else v$expr <- paste0(v$expr, x)
-      })
-    })
-  })
+  add_to_expr <- function(val) {
+    if (v$expr == "0") v$expr <- val
+    else v$expr <- paste0(v$expr, val)
+  }
   
-  # Operators mapping
-  observeEvent(input$btn_add, { v$expr <- paste0(v$expr, "+") })
-  observeEvent(input$btn_sub, { v$expr <- paste0(v$expr, "-") })
-  observeEvent(input$btn_mult, { v$expr <- paste0(v$expr, "*") })
-  observeEvent(input$btn_div, { v$expr <- paste0(v$expr, "/") })
+  observeEvent(input$btn_0, { add_to_expr("0") })
+  observeEvent(input$btn_1, { add_to_expr("1") })
+  observeEvent(input$btn_2, { add_to_expr("2") })
+  observeEvent(input$btn_3, { add_to_expr("3") })
+  observeEvent(input$btn_4, { add_to_expr("4") })
+  observeEvent(input$btn_5, { add_to_expr("5") })
+  observeEvent(input$btn_6, { add_to_expr("6") })
+  observeEvent(input$btn_7, { add_to_expr("7") })
+  observeEvent(input$btn_8, { add_to_expr("8") })
+  observeEvent(input$btn_9, { add_to_expr("9") })
+  observeEvent(input$btn_dot, { add_to_expr(".") })
+  observeEvent(input$btn_add, { add_to_expr("+") })
+  observeEvent(input$btn_sub, { add_to_expr("-") })
+  observeEvent(input$btn_mult, { add_to_expr("*") })
+  observeEvent(input$btn_div, { add_to_expr("/") })
   
-  # Clear button
+  observeEvent(input$btn_perc, { add_to_expr("%%") })
+  
   observeEvent(input$btn_AC, { v$expr <- "0" })
   
-  # Calculation Logic
   observeEvent(input$btn_equal, {
     tryCatch({
-      # eval(parse()) treats the string as R code to calculate it
-      result <- eval(parse(text = v$expr))
-      v$expr <- as.character(result)
-    }, error = function(e) {
-      v$expr <- "Error"
-    })
+      v$expr <- as.character(eval(parse(text = v$expr)))
+    }, error = function(e) { v$expr <- "Error" })
   })
   
   output$display <- renderText({ v$expr })
