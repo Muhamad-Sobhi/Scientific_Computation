@@ -1,0 +1,94 @@
+:root {
+  --bg-glass: rgba(26, 26, 26, 0.88);
+  --accent-blue: #a5c9ff;
+  --text-white: #ffffff;
+  --btn-num: #262626;
+  --btn-op: #33363d;
+  --btn-action: #a5a5a5;
+  --radius-main: 30px;
+  --radius-btn: 14px;
+  --gap: 4px;
+}
+
+body {
+  background: url("Team-logo.jpeg") no-repeat center fixed;
+  background-size: cover;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.calc-box {
+  background: var(--bg-glass);
+  border-radius: var(--radius-main);
+  padding: 15px;
+  width: 320px;
+  margin: 60px auto;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.display-screen {
+  text-align: right;
+  font-size: 34px;
+  padding: 25px 15px;
+  color: var(--text-white);
+  min-height: 100px;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  letter-spacing: 1px;
+}
+
+.compact-row {
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
+.compact-row [class*="col-"] {
+  padding: var(--gap) !important;
+}
+
+.btn-style {
+  width: 100%;
+  height: 58px;
+  border: none;
+  font-size: 19px;
+  font-weight: 500;
+  border-radius: var(--radius-btn);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.btn-style:active {
+  transform: scale(0.92);
+  filter: brightness(1.2);
+}
+
+.btn-num {
+  background: var(--btn-num);
+  color: var(--text-white);
+}
+.btn-op {
+  background: var(--btn-op);
+  color: var(--accent-blue);
+}
+.btn-action {
+  background: var(--btn-action);
+  color: #1a1a1a;
+}
+.btn-equal {
+  background: var(--accent-blue);
+  color: #1a1a1a;
+  font-weight: bold;
+}
+
+.small-text {
+  font-size: 13px;
+}
+
+.btn-style:hover {
+  filter: brightness(1.1);
+  cursor: pointer;
+}
