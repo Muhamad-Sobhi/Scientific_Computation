@@ -1,9 +1,7 @@
 library(shiny)
 
 ui <- fluidPage(
-  tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
-  ),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "style.css")),
   div(
     class = "calc-box",
     div(class = "display-screen", textOutput("display")),
@@ -16,7 +14,21 @@ ui <- fluidPage(
     ),
     fluidRow(
       class = "compact-row",
-      column(3, actionButton("btn_log", "log(x,b)", class = "btn-style btn-op small-text")),
+      column(3, actionButton("btn_sin", "sin", class = "btn-style btn-op small-text")),
+      column(3, actionButton("btn_cos", "cos", class = "btn-style btn-op small-text")),
+      column(3, actionButton("btn_tan", "tan", class = "btn-style btn-op small-text")),
+      column(3, actionButton("btn_sqrt", "√", class = "btn-style btn-op"))
+    ),
+    fluidRow(
+      class = "compact-row",
+      column(3, actionButton("btn_pi", "π", class = "btn-style btn-op")),
+      column(3, actionButton("btn_e", "e", class = "btn-style btn-op")),
+      column(3, actionButton("btn_exp", "exp", class = "btn-style btn-op small-text")),
+      column(3, actionButton("btn_pow", "^", class = "btn-style btn-op"))
+    ),
+    fluidRow(
+      class = "compact-row",
+      column(3, actionButton("btn_log", "log(x)", class = "btn-style btn-op small-text")),
       column(3, actionButton("btn_comma", ",", class = "btn-style btn-op")),
       column(3, actionButton("btn_perc", "%", class = "btn-style btn-op")),
       column(3, actionButton("btn_div", "÷", class = "btn-style btn-op"))
@@ -53,65 +65,56 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   v <- reactiveValues(expr = "0")
-
   add_to_expr <- function(val) {
-    if (v$expr == "0" || v$expr == "Error") {
-      v$expr <- val
-    } else {
-      v$expr <- paste0(v$expr, val)
-    }
+    if (v$expr == "0" || v$expr == "Error") v$expr <- val else v$expr <- paste0(v$expr, val)
   }
 
-  observeEvent(input$btn_0, {add_to_expr("0")})
-  observeEvent(input$btn_1, {add_to_expr("1")})
-  observeEvent(input$btn_2, {add_to_expr("2")})
-  observeEvent(input$btn_3, {add_to_expr("3")})
-  observeEvent(input$btn_4, {add_to_expr("4")})
-  observeEvent(input$btn_5, {add_to_expr("5")})
-  observeEvent(input$btn_6, {add_to_expr("6")})
-  observeEvent(input$btn_7, {add_to_expr("7")})
-  observeEvent(input$btn_8, {add_to_expr("8")})
-  observeEvent(input$btn_9, {add_to_expr("9")})
-  observeEvent(input$btn_dot, {add_to_expr(".")})
-  observeEvent(input$btn_comma, {add_to_expr(",")})
-  observeEvent(input$btn_open, {add_to_expr("(")})
-  observeEvent(input$btn_close, {add_to_expr(")")})
-  observeEvent(input$btn_add, {add_to_expr("+")})
-  observeEvent(input$btn_sub, {add_to_expr("-")})
-  observeEvent(input$btn_mult, {add_to_expr("*")})
-  observeEvent(input$btn_div, {add_to_expr("/")})
-  observeEvent(input$btn_perc, {add_to_expr("%%")})
-  observeEvent(input$btn_AC, {v$expr <- "0"})
-  
-  observeEvent(input$btn_log, {
-    if (v$expr == "0") {
-      v$expr <- "log("
-    } else {
-      v$expr <- paste0(v$expr, "log(")
-    }
+  observeEvent(input$btn_0, add_to_expr("0"))
+  observeEvent(input$btn_1, add_to_expr("1"))
+  observeEvent(input$btn_2, add_to_expr("2"))
+  observeEvent(input$btn_3, add_to_expr("3"))
+  observeEvent(input$btn_4, add_to_expr("4"))
+  observeEvent(input$btn_5, add_to_expr("5"))
+  observeEvent(input$btn_6, add_to_expr("6"))
+  observeEvent(input$btn_7, add_to_expr("7"))
+  observeEvent(input$btn_8, add_to_expr("8"))
+  observeEvent(input$btn_9, add_to_expr("9"))
+  observeEvent(input$btn_dot, add_to_expr("."))
+  observeEvent(input$btn_comma, add_to_expr(","))
+  observeEvent(input$btn_open, add_to_expr("("))
+  observeEvent(input$btn_close, add_to_expr(")"))
+  observeEvent(input$btn_add, add_to_expr("+"))
+  observeEvent(input$btn_sub, add_to_expr("-"))
+  observeEvent(input$btn_mult, add_to_expr("*"))
+  observeEvent(input$btn_div, add_to_expr("/"))
+  observeEvent(input$btn_perc, add_to_expr("%%"))
+  observeEvent(input$btn_pow, add_to_expr("^"))
+  observeEvent(input$btn_pi, add_to_expr("pi"))
+  observeEvent(input$btn_e, add_to_expr("e"))
+
+  observeEvent(input$btn_log, add_to_expr("log("))
+  observeEvent(input$btn_exp, add_to_expr("exp("))
+  observeEvent(input$btn_sqrt, add_to_expr("sqrt("))
+  observeEvent(input$btn_sin, add_to_expr("sin("))
+  observeEvent(input$btn_cos, add_to_expr("cos("))
+  observeEvent(input$btn_tan, add_to_expr("tan("))
+
+  observeEvent(input$btn_AC, v$expr <- "0")
+  observeEvent(input$btn_del, {
+    if (nchar(v$expr) > 1) v$expr <- substr(v$expr, 1, nchar(v$expr) - 1) else v$expr <- "0"
   })
 
   observeEvent(input$btn_equal, {
     tryCatch(
       {
-        res <- eval(parse(text = v$expr))
-        v$expr <- as.character(res)
+        e <- exp(1) 
+        v$expr <- as.character(eval(parse(text = v$expr)))
       },
-      error = function(e) {
-        v$expr <- "Error"
-      }
+      error = function(err) v$expr <- "Error"
     )
   })
 
-  observeEvent(input$btn_del, {
-    if (nchar(v$expr) > 1) {
-      v$expr <- substr(v$expr, 1, nchar(v$expr) - 1)
-    } else {
-      v$expr <- "0"
-    }
-  })
-  
-  output$display <- renderText({v$expr})
+  output$display <- renderText(v$expr)
 }
 
 shinyApp(ui, server)
