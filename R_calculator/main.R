@@ -7,64 +7,71 @@ ui <- fluidPage(
     div(class = "display-screen", textOutput("display")),
     fluidRow(
       class = "compact-row",
+      column(3, actionButton("btn_mode", "⚙ SCI", class = "btn-style btn-mode small-text")),
       column(3, actionButton("btn_AC", "AC", class = "btn-style btn-action")),
       column(3, actionButton("btn_del", "⌫", class = "btn-style btn-action")),
-      column(3, actionButton("btn_open", "(", class = "btn-style btn-op")),
-      column(3, actionButton("btn_close", ")", class = "btn-style btn-op"))
+      column(3, actionButton("btn_perc", "%", class = "btn-style btn-op"))
     ),
-    fluidRow(
-      class = "compact-row",
-      column(3, actionButton("btn_sin", "sin", class = "btn-style btn-op small-text")),
-      column(3, actionButton("btn_cos", "cos", class = "btn-style btn-op small-text")),
-      column(3, actionButton("btn_tan", "tan", class = "btn-style btn-op small-text")),
-      column(3, actionButton("btn_sqrt", "√", class = "btn-style btn-op"))
-    ),
-    fluidRow(
-      class = "compact-row",
-      column(3, actionButton("btn_pi", "π", class = "btn-style btn-op")),
-      column(3, actionButton("btn_e", "e", class = "btn-style btn-op")),
-      column(3, actionButton("btn_exp", "exp", class = "btn-style btn-op small-text")),
-      column(3, actionButton("btn_pow", "^", class = "btn-style btn-op"))
-    ),
-    fluidRow(
-      class = "compact-row",
-      column(3, actionButton("btn_log", "log(x)", class = "btn-style btn-op small-text")),
-      column(3, actionButton("btn_comma", ",", class = "btn-style btn-op")),
-      column(3, actionButton("btn_perc", "%", class = "btn-style btn-op")),
-      column(3, actionButton("btn_div", "÷", class = "btn-style btn-op"))
+    conditionalPanel(
+      condition = "output.is_sci",
+      fluidRow(
+        class = "compact-row",
+        column(3, actionButton("btn_sin", "sin", class = "btn-style btn-op small-text")),
+        column(3, actionButton("btn_cos", "cos", class = "btn-style btn-op small-text")),
+        column(3, actionButton("btn_tan", "tan", class = "btn-style btn-op small-text")),
+        column(3, actionButton("btn_sqrt", "√", class = "btn-style btn-op"))
+      ),
+      fluidRow(
+        class = "compact-row",
+        column(3, actionButton("btn_pi", "π", class = "btn-style btn-op")),
+        column(3, actionButton("btn_e", "e", class = "btn-style btn-op")),
+        column(3, actionButton("btn_exp", "exp", class = "btn-style btn-op small-text")),
+        column(3, actionButton("btn_pow", "^", class = "btn-style btn-op"))
+      ),
+      fluidRow(
+        class = "compact-row",
+        column(3, actionButton("btn_log", "log(x)", class = "btn-style btn-op small-text")),
+        column(3, actionButton("btn_comma", ",", class = "btn-style btn-op")),
+        column(3, actionButton("btn_open", "(", class = "btn-style btn-op")),
+        column(3, actionButton("btn_close", ")", class = "btn-style btn-op"))
+      )
     ),
     fluidRow(
       class = "compact-row",
       column(3, actionButton("btn_7", "7", class = "btn-style btn-num")),
       column(3, actionButton("btn_8", "8", class = "btn-style btn-num")),
       column(3, actionButton("btn_9", "9", class = "btn-style btn-num")),
-      column(3, actionButton("btn_mult", "×", class = "btn-style btn-op"))
+      column(3, actionButton("btn_div", "÷", class = "btn-style btn-op"))
     ),
     fluidRow(
       class = "compact-row",
       column(3, actionButton("btn_4", "4", class = "btn-style btn-num")),
       column(3, actionButton("btn_5", "5", class = "btn-style btn-num")),
       column(3, actionButton("btn_6", "6", class = "btn-style btn-num")),
-      column(3, actionButton("btn_sub", "-", class = "btn-style btn-op"))
+      column(3, actionButton("btn_mult", "×", class = "btn-style btn-op"))
     ),
     fluidRow(
       class = "compact-row",
       column(3, actionButton("btn_1", "1", class = "btn-style btn-num")),
       column(3, actionButton("btn_2", "2", class = "btn-style btn-num")),
       column(3, actionButton("btn_3", "3", class = "btn-style btn-num")),
-      column(3, actionButton("btn_add", "+", class = "btn-style btn-op"))
+      column(3, actionButton("btn_sub", "-", class = "btn-style btn-op"))
     ),
     fluidRow(
       class = "compact-row",
       column(6, actionButton("btn_0", "0", class = "btn-style btn-num")),
       column(3, actionButton("btn_dot", ".", class = "btn-style btn-num")),
-      column(3, actionButton("btn_equal", "=", class = "btn-style btn-equal"))
+      column(3, actionButton("btn_add", "+", class = "btn-style btn-op"))
+    ),
+    fluidRow(
+      class = "compact-row",
+      column(12, actionButton("btn_equal", "=", class = "btn-style btn-equal"))
     )
   )
 )
 
 server <- function(input, output, session) {
-  v <- reactiveValues(expr = "0")
+  v <- reactiveValues(expr = "0", mode = "basic")
   add_to_expr <- function(val) {
     if (v$expr == "0" || v$expr == "Error") v$expr <- val else v$expr <- paste0(v$expr, val)
   }
@@ -104,11 +111,30 @@ server <- function(input, output, session) {
     if (nchar(v$expr) > 1) v$expr <- substr(v$expr, 1, nchar(v$expr) - 1) else v$expr <- "0"
   })
 
+  observeEvent(input$btn_mode, {
+    if (v$mode == "basic") {
+      v$mode <- "sci"
+      updateActionButton(session, "btn_mode", label = "⚙ BASIC")
+    } else {
+      v$mode <- "basic"
+      updateActionButton(session, "btn_mode", label = "⚙ SCI")
+    }
+  })
+
+  output$is_sci <- reactive(v$mode == "sci")
+  outputOptions(output, "is_sci", suspendWhenHidden = FALSE)
+
   observeEvent(input$btn_equal, {
     tryCatch(
       {
-        e <- exp(1) 
-        v$expr <- as.character(eval(parse(text = v$expr)))
+
+          e = exp(1)
+          sin = function(x) base::sin(x * pi / 180)
+          cos = function(x) base::cos(x * pi / 180)
+          tan = function(x) base::tan(x * pi / 180)
+
+        res <- eval(parse(text = v$expr))
+        v$expr <- if (res == round(res)) res else format(res, digits = 10)
       },
       error = function(err) v$expr <- "Error"
     )
