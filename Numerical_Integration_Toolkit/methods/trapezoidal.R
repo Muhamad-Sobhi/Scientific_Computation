@@ -5,5 +5,5 @@ trapezoidal <- function(f, a, b, n) {
 
     sum_middle <- if (n > 1) sum(y[2:n]) else 0
 
-    (h / 2) * (y[1] + y[n + 1] + 2 * sum_middle)
+    (h / 2) * (y[1] + 2 * sum_middle + y[n + 1])
 }
