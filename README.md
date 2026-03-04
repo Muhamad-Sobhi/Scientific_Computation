@@ -21,11 +21,13 @@ Built with **R** | Each project lives in its own folder
 ```
 Scientific_Computation/
 │
-├── 📁 R_calculator/          # Project 1: Interactive Calculator
-│   ├── main.R                # Shiny app source code
-│   └── docker-compose.yml    # Docker setup
+├── 📁 R_calculator/                  # Project 1: Interactive Calculator
+│   ├── main.R                        # Shiny app source code
+│   ├── Code_Explanation.md           # Detailed code explanation
+│   ├── README.md                     # Project specific documentation
+│   └── docker-compose.yml            # Docker setup
 │
-├── 📁 ...                    # Future projects will be added here
+├── 📁 Numerical_Integration_Toolkit/ # Project 2: Numerical Integration
 │
 └── 📄 README.md
 ```
@@ -36,10 +38,10 @@ Scientific_Computation/
 
 ## 🚀 Projects
 
-| #   | Project                            | Description                                                | Tech Stack       |
-| --- | ---------------------------------- | ---------------------------------------------------------- | ---------------- |
-| 1   | [**R Calculator**](./R_calculator) | A sleek, iOS-style interactive calculator built with Shiny | R, Shiny, Docker |
-| 2   | _Coming soon..._                   | —                                                          | —                |
+| #   | Project                                                              | Description                                                                                                                                                                     | Tech Stack       |
+| --- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| 1   | [**R Calculator**](./R_calculator)                                   | A sleek, interactive calculator with a toggleable Scientific/Basic mode, support for trigonometric and advanced operations, smart output formatting, and robust error handling. | R, Shiny, Docker |
+| 2   | [**Numerical Integration Toolkit**](./Numerical_Integration_Toolkit) | A toolkit for performing various numerical integration methods.                                                                                                                 | R                |
 
 ---
 
