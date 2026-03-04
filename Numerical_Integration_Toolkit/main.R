@@ -44,4 +44,6 @@ for (m in tools::file_path_sans_ext(basename(method_files))) {
 
     cat(sprintf("  %-15s %-15.6f %.6f\n", m, val, elapsed))
 }
+
 cli_rule()
+
