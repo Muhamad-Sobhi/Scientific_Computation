@@ -8,8 +8,8 @@ args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) >= 4) {
     expr <- args[1]
-    a <- as.numeric(args[2])
-    b <- as.numeric(args[3])
+a <- eval(parse(text = args[2]))
+b <- eval(parse(text = args[3]))
     n <- as.integer(args[4])
 } else {
     f_in <- file("stdin")
@@ -17,12 +17,12 @@ if (length(args) >= 4) {
     cat("f(x): ")
     expr <- readLines(f_in, 1, warn = FALSE)
     cat("a: ")
-    a <- as.numeric(readLines(f_in, 1, warn = FALSE))
+    a <- eval(parse(text = readLines(f_in, 1, warn = FALSE)))
     cat("b: ")
-    b <- as.numeric(readLines(f_in, 1, warn = FALSE))
+    b <- eval(parse(text = readLines(f_in, 1, warn = FALSE)))
     cat("n: ")
     n <- as.integer(readLines(f_in, 1, warn = FALSE))
-    close(f_in)
+close(f_in)
 }
 
 f <- function(x) eval(parse(text = expr))
