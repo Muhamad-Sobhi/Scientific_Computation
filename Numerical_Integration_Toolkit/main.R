@@ -5,24 +5,28 @@ for (mf in method_files) source(mf)
 
 # Input
 args <- commandArgs(trailingOnly = TRUE)
-
+if (length(args) > 0 && length(args) < 4) {
+    stop("Usage: Rscript main.R 'f(x)' a b n")
+}
 if (length(args) >= 4) {
     expr <- args[1]
-a <- eval(parse(text = args[2]))
-b <- eval(parse(text = args[3]))
+    a <- eval(parse(text = args[2]))
+    b <- eval(parse(text = args[3]))
     n <- as.integer(args[4])
 } else {
     f_in <- file("stdin")
     open(f_in)
     cat("f(x): ")
     expr <- readLines(f_in, 1, warn = FALSE)
+    if (length(expr) == 0 || trimws(expr) == "") stop("Please enter a function.")
     cat("a: ")
     a <- eval(parse(text = readLines(f_in, 1, warn = FALSE)))
     cat("b: ")
     b <- eval(parse(text = readLines(f_in, 1, warn = FALSE)))
     cat("n: ")
     n <- as.integer(readLines(f_in, 1, warn = FALSE))
-close(f_in)
+    if (is.na(n) || n <= 0) stop("n must be a positive integer.")
+    close(f_in)
 }
 
 f <- function(x) eval(parse(text = expr))
@@ -46,4 +50,3 @@ for (m in tools::file_path_sans_ext(basename(method_files))) {
 }
 
 cli_rule()
-
