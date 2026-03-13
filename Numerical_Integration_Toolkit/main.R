@@ -1,52 +1,49 @@
-library(cli)
+#!/usr/bin/env Rscript
 
+# Load external scripts safely
+source("src/cli.R")
+source("src/math_utils.R")
+source("src/parser.R")
+
+# Load all methods from the 'methods' directory
 method_files <- list.files("methods", full.names = TRUE, pattern = "\\.R$")
 for (mf in method_files) source(mf)
 
-# Input
+# 1. Handle Input (Interactive or Args)
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args) > 0 && length(args) < 4) {
-    stop("Usage: Rscript main.R 'f(x)' a b n")
-}
-if (length(args) >= 4) {
-    expr <- args[1]
-    a <- eval(parse(text = args[2]))
-    b <- eval(parse(text = args[3]))
-    n <- as.integer(args[4])
-} else {
-    f_in <- file("stdin")
-    open(f_in)
-    cat("f(x): ")
-    expr <- readLines(f_in, 1, warn = FALSE)
-    if (length(expr) == 0 || trimws(expr) == "") stop("Please enter a function.")
-    cat("a: ")
-    a <- eval(parse(text = readLines(f_in, 1, warn = FALSE)))
-    cat("b: ")
-    b <- eval(parse(text = readLines(f_in, 1, warn = FALSE)))
-    cat("n: ")
-    n <- as.integer(readLines(f_in, 1, warn = FALSE))
-    if (is.na(n) || n <= 0) stop("n must be a positive integer.")
-    close(f_in)
-}
+inputs <- read_cli_inputs(args)
 
-f <- function(x) eval(parse(text = expr))
+# Validate logical limits
+validate_inputs(inputs$a, inputs$b)
 
+# 2. Parse Math Expression
+f <- parse_function(inputs$expr)
 
-# Run & Display
-cli_h1("Numerical Integration")
+# 3. Calculate Exact Answer
+exact <- get_exact_integral(f, inputs$a, inputs$b)
 
-cat(sprintf("  f(x) = %s | [%g, %g] | n = %d\n\n", expr, a, b, n))
-
-cat(sprintf("  %-15s %-15s %s\n", "Method", "Result", "Time(s)"))
-
-cli_rule()
+# 4. Run & Display
+print_header(inputs$expr, inputs$a, inputs$b, inputs$n)
 
 for (m in tools::file_path_sans_ext(basename(method_files))) {
-    start <- Sys.time()
-    val <- get(m)(f, a, b, n)
-    elapsed <- as.numeric(Sys.time() - start)
+  if (!exists(m)) next
+  method_func <- get(m)
 
-    cat(sprintf("  %-15s %-15.6f %.6f\n", m, val, elapsed))
+  start_time <- Sys.time()
+
+  # Run the integration algorithm
+  res <- tryCatch(
+    method_func(f, inputs$a, inputs$b, inputs$n),
+    error = function(e) {
+      cli::cli_alert_danger(sprintf("Method '%s' failed: %s", m, e$message))
+      return(NULL)
+    }
+  )
+
+  if (!is.null(res)) {
+    elapsed <- as.numeric(Sys.time() - start_time)
+    print_result_row(m, res, exact, elapsed)
+  }
 }
 
-cli_rule()
+print_footer(exact)
