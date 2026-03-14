@@ -28,7 +28,7 @@ estimate_max_deriv <- function(f, a, b, order = 2) {
   max(vals)
 }
 
-# Wrapper to safely run integrate and handle functions that might hit singularities
+
 get_exact_integral <- function(f, a, b) {
   res <- tryCatch(
     {
